@@ -18,5 +18,10 @@ namespace MQGroup.PetShop.Domain.Services
         {
             return _repo.ReadAllPets();
         }
+
+        public Pet CreatePet(Pet pet)
+        {
+            return _repo.AddPet(pet);
+        }
     }
 }

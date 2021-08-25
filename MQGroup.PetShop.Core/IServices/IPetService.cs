@@ -6,5 +6,7 @@ namespace MQGroup.PetShop.Core.IServices
     public interface IPetService
     {
         public List<Pet> GetAllPets();
+
+        public Pet CreatePet(Pet pet);
     }
 }

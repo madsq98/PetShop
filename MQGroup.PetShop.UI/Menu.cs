@@ -32,6 +32,9 @@ namespace MQGroup.PetShop.UI
                 {
                     //See all pets
                     seeAllPets();
+                } else if (choice == 2)
+                {
+                    createPet();
                 }
                 
                 PrintNewLine();
@@ -74,6 +77,15 @@ namespace MQGroup.PetShop.UI
             Print(" ");
         }
 
+        private void seeAllPetTypes()
+        {
+            var petTypes = _petTypeService.GetAllPetTypes();
+            foreach (PetType p in petTypes)
+            {
+                Print($"ID: {p.ID} | {p.Name}");
+            }
+        }
+        
         private void seeAllPets()
         {
             Print("All pets:");
@@ -82,6 +94,60 @@ namespace MQGroup.PetShop.UI
             {
                 Print($"{p.ID}, {p.Name}, {p.Type.Name}, {p.Color}, {p.Birthdate}, {p.SoldDate}, {p.Price}");
             }
+        }
+
+        private void createPet()
+        {
+            Print("Welcome to Create-A-Pat :-)");
+            
+            Print("Please enter a pet name:");
+            string petName = Console.ReadLine();
+            PrintNewLine();
+
+            Print("Please select a Pet Type ID:");
+            seeAllPetTypes();
+            var petType = Console.ReadLine();
+            int selection;
+            while (!int.TryParse(petType, out selection))
+            {
+                Print("You did not type a number! Try again!");
+                petType = Console.ReadLine();
+            }
+
+            while (_petTypeService.GetByID(selection) == null)
+            {
+                Print("Selected ID does not exist! Try again!");
+                petType = Console.ReadLine();
+            }
+
+            PetType pt = _petTypeService.GetByID(selection);
+            
+            Print("Please enter a color:");
+            string petColor = Console.ReadLine();
+            PrintNewLine();
+            
+            Print("Please enter birthday: (Format: DD-MM-YYYY)");
+            string petBirthUnformatted = Console.ReadLine();
+            DateTime petBirthday = DateTime.Parse(petBirthUnformatted);
+            PrintNewLine();
+            
+            Print("Please enter sold date: (Format: DD-MM-YYYY)");
+            string petSoldUnformatted = Console.ReadLine();
+            DateTime petSoldDate = DateTime.Parse(petSoldUnformatted);
+            PrintNewLine();
+            
+            Print("Please enter price:");
+            string petPriceUnformatted = Console.ReadLine();
+            double petPrice = double.Parse(petPriceUnformatted);
+            PrintNewLine();
+
+            Print("Thank you! Your pet was created :-)");
+            _petService.CreatePet(
+                new Pet
+                {
+                    Name = petName, Color = petColor, Birthdate = petBirthday, SoldDate = petSoldDate, Type = pt, Price = petPrice
+                }
+            );
         }
     }
 }

@@ -8,6 +8,7 @@ namespace MQGroup.PetShop.Infrastructure.DataAccess.Repositories
     public class PetRepository : IPetRepository
     {
         private static List<Pet> _petTable = new List<Pet>();
+        private static int nextID = 1;
 
         public PetRepository()
         {
@@ -17,22 +18,31 @@ namespace MQGroup.PetShop.Infrastructure.DataAccess.Repositories
 
             Pet nala = new Pet
             {
-                ID = 1, Name = "Nala", Color = "Grå", Type = cat, Birthdate = DateTime.Now, SoldDate = DateTime.Now,
+                Name = "Nala", Color = "Grå", Type = cat, Birthdate = DateTime.Now, SoldDate = DateTime.Now,
                 Price = 12.00
             };
             Pet hugo = new Pet
             {
-                ID = 2, Name = "Hugo", Color = "Orange", Type = cat, Birthdate = DateTime.Now, SoldDate = DateTime.Now,
+                Name = "Hugo", Color = "Orange", Type = cat, Birthdate = DateTime.Now, SoldDate = DateTime.Now,
                 Price = 120.00
             };
 
-            _petTable.Add(nala);
-            _petTable.Add(hugo);
+            AddPet(nala);
+            AddPet(hugo);
         }
 
         public List<Pet> ReadAllPets()
         {
             return _petTable;
+        }
+
+        public Pet AddPet(Pet pet)
+        {
+            pet.ID = nextID;
+            _petTable.Add(pet);
+
+            nextID++;
+            return pet;
         }
     }
 }
