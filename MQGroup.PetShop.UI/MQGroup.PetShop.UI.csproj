@@ -5,4 +5,10 @@
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\MQGroup.PetShop.Core\MQGroup.PetShop.Core.csproj" />
+      <ProjectReference Include="..\MQGroup.PetShop.Domain\MQGroup.PetShop.Domain.csproj" />
+      <ProjectReference Include="..\MQGroup.PetShop.Infrastructure.DataAccess\MQGroup.PetShop.Infrastructure.DataAccess.csproj" />
+    </ItemGroup>
+
 </Project>
