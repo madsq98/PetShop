@@ -28,6 +28,7 @@ namespace MQGroup.PetShop.UI
             int choice;
             while ((choice = GetMainMenuSelection()) != 0)
             {
+                PrintNewLine();
                 if (choice == 1)
                 {
                     //See all pets
@@ -35,6 +36,12 @@ namespace MQGroup.PetShop.UI
                 } else if (choice == 2)
                 {
                     createPet();
+                } else if (choice == 3)
+                {
+                    updatePet();
+                } else if (choice == 4)
+                {
+                    deletePet();
                 }
                 
                 PrintNewLine();
@@ -60,6 +67,10 @@ namespace MQGroup.PetShop.UI
             Print("2 - Create a pet");
             Print("3 - Edit a pet");
             Print("4 - Delete a pet");
+            Print("--------------------------------");
+            Print("5 - Get a list of pets by Pet Type");
+            Print("6 - Get a list of pets, sorted by price");
+            Print("7 - List 5 cheapest pets");
             Print("0 - Exit");
         }
         private void WelcomeGreeting()
@@ -85,6 +96,110 @@ namespace MQGroup.PetShop.UI
                 Print($"ID: {p.ID} | {p.Name}");
             }
         }
+
+        private void updatePet()
+        {
+            Print("Type ID of pet to update:");
+            
+            var petId = Console.ReadLine();
+            int selection;
+            while (!int.TryParse(petId, out selection))
+            {
+                Print("You did not type a number! Try again!");
+                petId = Console.ReadLine();
+            }
+
+            Pet oldPet = _petService.GetPetById(selection);
+
+            if (oldPet == null)
+            {
+                Print($"Pet with ID {selection} was not found!");
+            }
+            else
+            {
+                Print("Welcome to Update-A-Pet :-)");
+                Print("Keep the field blank, and press enter to keep the old value!");
+                PrintNewLine();
+            
+                Print($"The old name was {oldPet.Name}. Please enter a new name:");
+                string petName = Console.ReadLine();
+                petName = petName.Length > 0 ? petName : oldPet.Name;
+                oldPet.Name = petName;
+                PrintNewLine();
+
+                Print($"The old Pet Type is {oldPet.Type.Name}. Please enter a new Pet Type ID:");
+                seeAllPetTypes();
+                var petType = Console.ReadLine();
+                PetType pt = oldPet.Type;
+                if (petType.Length > 0)
+                {
+                    int selection1;
+                    while (!int.TryParse(petType, out selection1))
+                    {
+                        Print("You did not type a number! Try again!");
+                        petType = Console.ReadLine();
+                    }
+
+                    while (_petTypeService.GetByID(selection1) == null)
+                    {
+                        Print("Selected ID does not exist! Try again!");
+                        petType = Console.ReadLine();
+                    }
+
+                    pt = _petTypeService.GetByID(selection1);
+                }
+
+                oldPet.Type = pt;
+
+                Print($"The old color is {oldPet.Color}. Please type a new color:");
+                string petColor = Console.ReadLine();
+                petColor = petColor.Length > 0 ? petColor : oldPet.Color;
+                oldPet.Color = petColor;
+                PrintNewLine();
+            
+                Print($"Old birthday is {oldPet.Birthdate}. Please enter new birthday: (Format: DD-MM-YYYY)");
+                string petBirthUnformatted = Console.ReadLine();
+                DateTime petBirthday = petBirthUnformatted.Length > 0 ? DateTime.Parse(petBirthUnformatted) : oldPet.Birthdate;
+                oldPet.Birthdate = petBirthday;
+                PrintNewLine();
+            
+                Print($"Old sold date is {oldPet.SoldDate}. Please enter new sold date: (Format: DD-MM-YYYY)");
+                string petSoldUnformatted = Console.ReadLine();
+                DateTime petSoldDate = petSoldUnformatted.Length > 0 ? DateTime.Parse(petSoldUnformatted) : oldPet.SoldDate;
+                oldPet.SoldDate = petSoldDate;
+                PrintNewLine();
+            
+                Print($"Old price is {oldPet.Price}. Please enter new price:");
+                string petPriceUnformatted = Console.ReadLine();
+                double petPrice = petPriceUnformatted.Length > 0 ? double.Parse(petPriceUnformatted) : oldPet.Price;
+                oldPet.Price = petPrice;
+                PrintNewLine();
+
+                Print("Thank you! Your pet was updated :-)");
+            }
+        }
+
+        private void deletePet()
+        {
+            Print("Type ID to delete:");
+
+            var petId = Console.ReadLine();
+            int selection;
+            while (!int.TryParse(petId, out selection))
+            {
+                Print("You did not type a number! Try again!");
+                petId = Console.ReadLine();
+            }
+
+            if (_petService.DeletePetById(selection))
+            {
+                Print($"Thank you! Pet with ID {selection} was deleted!");
+            }
+            else
+            {
+                Print($"Pet with ID {selection} was not found!");
+            }
+        }
         
         private void seeAllPets()
         {
@@ -98,7 +213,7 @@ namespace MQGroup.PetShop.UI
 
         private void createPet()
         {
-            Print("Welcome to Create-A-Pat :-)");
+            Print("Welcome to Create-A-Pet :-)");
             
             Print("Please enter a pet name:");
             string petName = Console.ReadLine();

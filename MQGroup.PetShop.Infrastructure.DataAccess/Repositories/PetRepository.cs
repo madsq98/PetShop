@@ -44,5 +44,31 @@ namespace MQGroup.PetShop.Infrastructure.DataAccess.Repositories
             nextID++;
             return pet;
         }
+
+        public bool DeletePetById(int id)
+        {
+            Pet p = GetPetById(id);
+            if (p != null)
+            {
+                _petTable.Remove(p);
+                return true;
+            }
+
+            return false;
+        }
+
+        public Pet GetPetById(int? id)
+        {
+            Pet p = null;
+            for (int i = 0; i < _petTable.Count; i++)
+            {
+                if (_petTable[i].ID == id)
+                {
+                    p = _petTable[i];
+                }
+            }
+
+            return p;
+        }
     }
 }

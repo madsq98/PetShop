@@ -8,5 +8,9 @@ namespace MQGroup.PetShop.Core.IServices
         public List<Pet> GetAllPets();
 
         public Pet CreatePet(Pet pet);
+
+        public bool DeletePetById(int id);
+
+        public Pet GetPetById(int id);
     }
 }

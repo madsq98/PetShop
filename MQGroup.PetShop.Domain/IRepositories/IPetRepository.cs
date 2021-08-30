@@ -8,5 +8,9 @@ namespace MQGroup.PetShop.Domain.IRepositories
         public List<Pet> ReadAllPets();
 
         public Pet AddPet(Pet pet);
+
+        public bool DeletePetById(int id);
+
+        public Pet GetPetById(int? id);
     }
 }
