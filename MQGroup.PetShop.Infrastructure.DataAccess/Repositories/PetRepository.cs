@@ -12,23 +12,6 @@ namespace MQGroup.PetShop.Infrastructure.DataAccess.Repositories
 
         public PetRepository()
         {
-            //POPULATE MOCK
-            PetType dog = new PetType{ ID = 1, Name = "Dog" };
-            PetType cat = new PetType{ ID = 2, Name = "Cat" };
-
-            Pet nala = new Pet
-            {
-                Name = "Nala", Color = "Grå", Type = cat, Birthdate = DateTime.Now, SoldDate = DateTime.Now,
-                Price = 12.00
-            };
-            Pet hugo = new Pet
-            {
-                Name = "Hugo", Color = "Orange", Type = cat, Birthdate = DateTime.Now, SoldDate = DateTime.Now,
-                Price = 120.00
-            };
-
-            AddPet(nala);
-            AddPet(hugo);
         }
 
         public List<Pet> ReadAllPets()
@@ -69,6 +52,18 @@ namespace MQGroup.PetShop.Infrastructure.DataAccess.Repositories
             }
 
             return p;
+        }
+
+        public List<Pet> ReadPetsByType(PetType petType)
+        {
+            List<Pet> returnList = new List<Pet>();
+            foreach (Pet p in _petTable)
+            {
+                if (p.Type == petType)
+                    returnList.Add(p);
+            }
+
+            return returnList;
         }
     }
 }

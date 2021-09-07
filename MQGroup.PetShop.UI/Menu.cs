@@ -42,6 +42,15 @@ namespace MQGroup.PetShop.UI
                 } else if (choice == 4)
                 {
                     deletePet();
+                } else if (choice == 5)
+                {
+                    getPetsByType();
+                } else if (choice == 6)
+                {
+                    sortByPrice();
+                } else if (choice == 7)
+                {
+                    fiveCheapestPets();
                 }
                 
                 PrintNewLine();
@@ -94,6 +103,59 @@ namespace MQGroup.PetShop.UI
             foreach (PetType p in petTypes)
             {
                 Print($"ID: {p.ID} | {p.Name}");
+            }
+        }
+
+        private void sortByPrice()
+        {
+            Print("List of pets, sorted by price:");
+            var pets = _petService.SortPetsByPrice(_petService.GetAllPets());
+            foreach (Pet p in pets)
+            {
+                Print($"{p.ID}, {p.Name}, {p.Type.Name}, {p.Color}, {p.Birthdate}, {p.SoldDate}, {p.Price}");
+            }
+            PrintNewLine();
+        }
+
+        private void fiveCheapestPets()
+        {
+            Print("5 cheapest pets:");
+            var pets = _petService.SortPetsByPrice(_petService.GetAllPets());
+            for(int i = 0; i < 5; i++)
+            {
+                Pet p = pets[i];
+                Print($"{p.ID}, {p.Name}, {p.Type.Name}, {p.Color}, {p.Birthdate}, {p.SoldDate}, {p.Price}");
+            }
+            PrintNewLine();
+        }
+
+        private void getPetsByType()
+        {
+            Print("List of pet types:");
+            seeAllPetTypes();
+            PrintNewLine();
+            Print("Enter ID of Pet Type to search for:");
+            var petTypeId = Console.ReadLine();
+            int selection;
+            while (!int.TryParse(petTypeId, out selection))
+            {
+                Print("You did not type a number! Try again!");
+                petTypeId = Console.ReadLine();
+            }
+            
+            while (_petTypeService.GetByID(selection) == null)
+            {
+                Print("Invalid Pet Type ID!");
+                petTypeId = Console.ReadLine();
+            }
+
+            PetType petType = _petTypeService.GetByID(selection);
+
+            Print($"All pets with Pet Type ({petType.Name}):");
+            var pets = _petService.GetPetsByType(petType);
+            foreach (Pet p in pets)
+            {
+                Print($"{p.ID}, {p.Name}, {p.Type.Name}, {p.Color}, {p.Birthdate}, {p.SoldDate}, {p.Price}");
             }
         }
 

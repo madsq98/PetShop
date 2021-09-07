@@ -12,5 +12,9 @@ namespace MQGroup.PetShop.Core.IServices
         public bool DeletePetById(int id);
 
         public Pet GetPetById(int id);
+
+        public List<Pet> GetPetsByType(PetType petType);
+
+        public List<Pet> SortPetsByPrice(List<Pet> sortList);
     }
 }

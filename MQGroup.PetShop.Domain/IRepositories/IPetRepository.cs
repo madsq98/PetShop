@@ -12,5 +12,7 @@ namespace MQGroup.PetShop.Domain.IRepositories
         public bool DeletePetById(int id);
 
         public Pet GetPetById(int? id);
+
+        public List<Pet> ReadPetsByType(PetType petType);
     }
 }

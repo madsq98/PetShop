@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MQGroup.PetShop.Core.IServices;
 using MQGroup.PetShop.Core.Models;
 using MQGroup.PetShop.Domain.IRepositories;
@@ -32,6 +33,16 @@ namespace MQGroup.PetShop.Domain.Services
         public Pet GetPetById(int id)
         {
             return _repo.GetPetById(id);
+        }
+
+        public List<Pet> GetPetsByType(PetType petType)
+        {
+            return _repo.ReadPetsByType(petType);
+        }
+
+        public List<Pet> SortPetsByPrice(List<Pet> sortList)
+        {
+            return sortList.OrderBy(o => o.Price).ToList();
         }
     }
 }

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MQGroup.PetShop.Core\MQGroup.PetShop.Core.csproj" />
+      <ProjectReference Include="..\MQGroup.PetShop.Domain\MQGroup.PetShop.Domain.csproj" />
+      <ProjectReference Include="..\MQGroup.PetShop.Infrastructure.DataAccess\MQGroup.PetShop.Infrastructure.DataAccess.csproj" />
+    </ItemGroup>
+
+</Project>
