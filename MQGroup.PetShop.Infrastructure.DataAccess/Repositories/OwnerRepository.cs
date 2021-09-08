@@ -26,6 +26,8 @@ namespace MQGroup.PetShop.Infrastructure.DataAccess.Repositories
 
         public Owner CreateOwner(Owner owner)
         {
+            owner.Id = nextID;
+            nextID++;
             _ownerTable.Add(owner);
             return owner;
         }
