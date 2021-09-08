@@ -37,6 +37,8 @@ namespace MQGroup.PetShop.WebApi
             });
             services.AddScoped<IPetRepository, PetRepository>();
             services.AddScoped<IPetService, PetService>();
+            services.AddScoped<IOwnerRepository, OwnerRepository>();
+            services.AddScoped<IOwnerService, OwnerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
