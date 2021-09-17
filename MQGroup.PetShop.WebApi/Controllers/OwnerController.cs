@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MQGroup.PetShop.Core.IServices;
 using MQGroup.PetShop.Core.Models;
+using MQGroup.PetShop.WebApi.DTO;
 
 namespace MQGroup.PetShop.WebApi.Controllers
 {
@@ -33,15 +34,29 @@ namespace MQGroup.PetShop.WebApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Owner> CreateOwner([FromBody] Owner owner)
+        public ActionResult<Owner> CreateOwner([FromBody] OwnerDto owner)
         {
-            return Ok(_ownerService.CreateOwner(owner));
+            return Ok(_ownerService.CreateOwner(new Owner
+            {
+                FirstName = owner.FirstName,
+                LastName = owner.LastName,
+                Address = owner.Address,
+                Email = owner.Email,
+                PhoneNumber = owner.PhoneNumber
+            }));
         }
 
         [HttpPut("{id}")]
-        public ActionResult<Owner> UpdateOwner(int id, [FromBody] Owner owner)
+        public ActionResult<Owner> UpdateOwner(int id, [FromBody] OwnerDto owner)
         {
-            return Ok(_ownerService.UpdateOwner(owner));
+            return Ok(_ownerService.UpdateOwner(id, new Owner
+            {
+                FirstName = owner.FirstName,
+                LastName = owner.LastName,
+                Address = owner.Address,
+                Email = owner.Email,
+                PhoneNumber = owner.PhoneNumber
+            }));
         }
 
         [HttpDelete("{id}")]

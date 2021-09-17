@@ -1,16 +1,21 @@
 ﻿using System;
+using MQGroup.PetShop.Core.Models;
 
-namespace MQGroup.PetShop.Core.Models
+namespace MQGroup.PetShop.Infrastructure.EFCore.Entities
 {
-    public class Pet
+    public class PetEntity
     {
         public int? ID { get; set; }
         
         public string Name { get; set; }
         
-        public PetType Type { get; set; }
+        public int TypeId { get; set; }
         
-        public Owner Owner { get; set; }
+        public PetTypeEntity Type { get; set; }
+        
+        public int OwnerId { get; set; }
+        
+        public OwnerEntity Owner { get; set; }
         
         public DateTime Birthdate { get; set; }
         

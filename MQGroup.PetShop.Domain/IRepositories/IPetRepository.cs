@@ -13,6 +13,8 @@ namespace MQGroup.PetShop.Domain.IRepositories
 
         public Pet GetPetById(int? id);
 
+        public Pet UpdatePet(int id, Pet pet);
+
         public List<Pet> ReadPetsByType(PetType petType);
     }
 }

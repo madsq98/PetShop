@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MQGroup.PetShop.Core.IServices;
 using MQGroup.PetShop.Core.Models;
+using MQGroup.PetShop.WebApi.DTO;
 
 namespace MQGroup.PetShop.WebApi.Controllers
 {
@@ -29,20 +30,32 @@ namespace MQGroup.PetShop.WebApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Pet> createPet([FromBody] Pet p)
+        public ActionResult<Pet> createPet([FromBody] PetDto p)
         {
-            return Ok(_petService.CreatePet(p));
+            return Ok(_petService.CreatePet(new Pet
+            {
+                Name = p.Name,
+                Color = p.Color,
+                Birthdate = p.Birthdate,
+                SoldDate = p.SoldDate,
+                Price = p.Price,
+                Type = new PetType { ID = p.PetTypeId },
+                Owner = new Owner { Id = p.OwnerId }
+            }));
         }
 
         [HttpPut("{id}")]
-        public ActionResult<Pet> updatePet(int id, [FromBody] Pet pet)
+        public ActionResult<Pet> updatePet(int id, [FromBody] PetDto pet)
         {
-            if (pet.ID != id)
+            return Ok(_petService.UpdatePet(id, new Pet
             {
-                return BadRequest("ID from path does not match Pet ID in body.");
-            }
-
-            return Ok(pet);
+                Name = pet.Name,
+                Color = pet.Color,
+                Birthdate = pet.Birthdate,
+                SoldDate = pet.SoldDate,
+                Price = pet.Price,
+                Type = new PetType {ID = pet.PetTypeId}
+            }));
         }
 
         [HttpDelete("{id}")]

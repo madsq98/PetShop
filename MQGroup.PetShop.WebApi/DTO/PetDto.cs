@@ -1,16 +1,14 @@
 ﻿using System;
 
-namespace MQGroup.PetShop.Core.Models
+namespace MQGroup.PetShop.WebApi.DTO
 {
-    public class Pet
+    public class PetDto
     {
-        public int? ID { get; set; }
-        
         public string Name { get; set; }
         
-        public PetType Type { get; set; }
+        public int PetTypeId { get; set; }
         
-        public Owner Owner { get; set; }
+        public int OwnerId { get; set; }
         
         public DateTime Birthdate { get; set; }
         

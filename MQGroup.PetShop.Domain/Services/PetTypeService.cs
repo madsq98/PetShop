@@ -23,5 +23,20 @@ namespace MQGroup.PetShop.Domain.Services
         {
             return _repo.GetByID(id);
         }
+
+        public PetType SavePetType(PetType petType)
+        {
+            return _repo.SavePetType(petType);
+        }
+
+        public bool DeletePetTypeById(int id)
+        {
+            return _repo.DeletePetTypeById(id);
+        }
+
+        public PetType UpdatePetType(int id, PetType petType)
+        {
+            return _repo.UpdatePetType(id, petType);
+        }
     }
 }

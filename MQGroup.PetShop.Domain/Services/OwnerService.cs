@@ -29,9 +29,9 @@ namespace MQGroup.PetShop.Domain.Services
             return _repo.CreateOwner(owner);
         }
 
-        public Owner UpdateOwner(Owner owner)
+        public Owner UpdateOwner(int id, Owner owner)
         {
-            return _repo.UpdateOwner(owner);
+            return _repo.UpdateOwner(id, owner);
         }
 
         public bool DeleteOwnerById(int id)

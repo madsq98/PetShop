@@ -35,6 +35,11 @@ namespace MQGroup.PetShop.Domain.Services
             return _repo.GetPetById(id);
         }
 
+        public Pet UpdatePet(int id, Pet pet)
+        {
+            return _repo.UpdatePet(id, pet);
+        }
+
         public List<Pet> GetPetsByType(PetType petType)
         {
             return _repo.ReadPetsByType(petType);

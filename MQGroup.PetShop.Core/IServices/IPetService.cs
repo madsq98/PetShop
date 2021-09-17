@@ -13,6 +13,8 @@ namespace MQGroup.PetShop.Core.IServices
 
         public Pet GetPetById(int id);
 
+        public Pet UpdatePet(int id, Pet pet);
+
         public List<Pet> GetPetsByType(PetType petType);
 
         public List<Pet> SortPetsByPrice(List<Pet> sortList);
