@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using MQGroup.PetShop.Core.IServices;
 using MQGroup.PetShop.Core.Models;
@@ -26,22 +28,44 @@ namespace MQGroup.PetShop.WebApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<Pet> getPetById(int id)
         {
-            return Ok(_petService.GetPetById(id));
+            try
+            {
+                return Ok(_petService.GetPetById(id));
+            }
+            catch (FileNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
 
         [HttpPost]
         public ActionResult<Pet> createPet([FromBody] PetDto p)
         {
-            return Ok(_petService.CreatePet(new Pet
+            try
             {
-                Name = p.Name,
-                Color = p.Color,
-                Birthdate = p.Birthdate,
-                SoldDate = p.SoldDate,
-                Price = p.Price,
-                Type = new PetType { ID = p.PetTypeId },
-                Owner = new Owner { Id = p.OwnerId }
-            }));
+                return Ok(_petService.CreatePet(new Pet
+                {
+                    Name = p.Name,
+                    Color = p.Color,
+                    Birthdate = p.Birthdate,
+                    SoldDate = p.SoldDate,
+                    Price = p.Price,
+                    Type = new PetType {ID = p.PetTypeId},
+                    Owner = new Owner {Id = p.OwnerId}
+                }));
+            }
+            catch (InvalidDataException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (FileNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (SystemException e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpPut("{id}")]

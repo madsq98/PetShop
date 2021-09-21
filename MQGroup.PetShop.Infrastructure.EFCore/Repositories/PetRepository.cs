@@ -1,20 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using MQGroup.PetShop.Core.Models;
 using MQGroup.PetShop.Domain.IRepositories;
 using MQGroup.PetShop.Infrastructure.EFCore.Entities;
+using MQGroup.PetShop.Infrastructure.EFCore.Validators;
 
 namespace MQGroup.PetShop.Infrastructure.EFCore.Repositories
 {
     public class PetRepository : IPetRepository
     {
         private readonly PetApplicationContext _ctx;
+        private readonly Validator _validator;
 
-        public PetRepository(PetApplicationContext ctx)
+        private readonly IPetTypeRepository _petTypeRepository;
+        private readonly IOwnerRepository _ownerRepository;
+
+        public PetRepository(PetApplicationContext ctx, IPetTypeRepository petTypeRepository, IOwnerRepository ownerRepository)
         {
             _ctx = ctx;
+            _petTypeRepository = petTypeRepository;
+            _ownerRepository = ownerRepository;
+
+            _validator = new Validator(ownerRepository, petTypeRepository);
         }
         public List<Pet> ReadAllPets()
         {
@@ -23,20 +34,30 @@ namespace MQGroup.PetShop.Infrastructure.EFCore.Repositories
 
         public Pet AddPet(Pet pet)
         {
-            var newEntity = _ctx.Pets.Add(new PetEntity
+            try
             {
-                ID = pet.ID,
-                Name = pet.Name,
-                Color = pet.Color,
-                Birthdate = pet.Birthdate,
-                SoldDate = pet.SoldDate,
-                Price = pet.Price,
-                TypeId = (int) pet.Type.ID,
-                OwnerId = pet.Owner.Id
-            }).Entity;
-            _ctx.SaveChanges();
+                if (!_validator.ValidatePet(pet))
+                    throw new InvalidDataException(_validator.GetErrors());
 
-            return GetPetById(newEntity.ID);
+                var newEntity = _ctx.Pets.Add(new PetEntity
+                {
+                    ID = pet.ID,
+                    Name = pet.Name,
+                    Color = pet.Color,
+                    Birthdate = pet.Birthdate,
+                    SoldDate = pet.SoldDate,
+                    Price = pet.Price,
+                    TypeId = (int) pet.Type.ID,
+                    OwnerId = pet.Owner.Id
+                }).Entity;
+                _ctx.SaveChanges();
+
+                return GetPetById(newEntity.ID);
+            }
+            catch (DbUpdateException e)
+            {
+                throw new SystemException("An internal error occured. Please contact the system provider.");
+            }
         }
 
         public bool DeletePetById(int id)
@@ -48,7 +69,10 @@ namespace MQGroup.PetShop.Infrastructure.EFCore.Repositories
 
         public Pet GetPetById(int? id)
         {
-            return ConversionOfPet().FirstOrDefault(pet => pet.ID == id);
+            Pet toReturn = ConversionOfPet().FirstOrDefault(pet => pet.ID == id);
+            if (toReturn == null)
+                throw new FileNotFoundException("Pet ID does not exist!");
+            return toReturn;
         }
 
         public Pet UpdatePet(int id, Pet pet)
