@@ -71,21 +71,47 @@ namespace MQGroup.PetShop.WebApi.Controllers
         [HttpPut("{id}")]
         public ActionResult<Pet> updatePet(int id, [FromBody] PetDto pet)
         {
-            return Ok(_petService.UpdatePet(id, new Pet
+            try
             {
-                Name = pet.Name,
-                Color = pet.Color,
-                Birthdate = pet.Birthdate,
-                SoldDate = pet.SoldDate,
-                Price = pet.Price,
-                Type = new PetType {ID = pet.PetTypeId}
-            }));
+                return Ok(_petService.UpdatePet(id, new Pet
+                {
+                    Name = pet.Name,
+                    Color = pet.Color,
+                    Birthdate = pet.Birthdate,
+                    SoldDate = pet.SoldDate,
+                    Price = pet.Price,
+                    Type = new PetType {ID = pet.PetTypeId}
+                }));
+            }
+            catch (InvalidDataException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (FileNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (SystemException e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public ActionResult<bool> deletePet(int id)
         {
-            return Ok(_petService.DeletePetById(id));
+            try
+            {
+                return Ok(_petService.DeletePetById(id));
+            }
+            catch (FileNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (SystemException e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
     }
 }

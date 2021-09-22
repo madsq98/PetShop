@@ -15,6 +15,7 @@ using Microsoft.OpenApi.Models;
 using MQGroup.PetShop.Core.IServices;
 using MQGroup.PetShop.Domain.IRepositories;
 using MQGroup.PetShop.Domain.Services;
+using MQGroup.PetShop.Domain.Validators;
 using MQGroup.PetShop.Infrastructure.EFCore;
 using MQGroup.PetShop.Infrastructure.EFCore.Repositories;
 using OwnerRepository = MQGroup.PetShop.Infrastructure.EFCore.Repositories.OwnerRepository;
@@ -57,6 +58,7 @@ namespace MQGroup.PetShop.WebApi
             services.AddScoped<IOwnerService, OwnerService>();
             services.AddScoped<IPetTypeRepository, PetTypeRepository>();
             services.AddScoped<IPetTypeService, PetTypeService>();
+            services.AddScoped<IValidator, Validator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,7 +68,11 @@ namespace MQGroup.PetShop.WebApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MQGroup.PetShop.WebApi v1"));
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MQGroup.PetShop.WebApi v1");
+                    c.DefaultModelsExpandDepth(-1);
+                });
 
                 using (var scope = app.ApplicationServices.CreateScope())
                 {

@@ -6,39 +6,35 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using MQGroup.PetShop.Core.Models;
 using MQGroup.PetShop.Domain.IRepositories;
+using MQGroup.PetShop.Domain.Validators;
 using MQGroup.PetShop.Infrastructure.EFCore.Entities;
-using MQGroup.PetShop.Infrastructure.EFCore.Validators;
 
 namespace MQGroup.PetShop.Infrastructure.EFCore.Repositories
 {
     public class PetRepository : IPetRepository
     {
         private readonly PetApplicationContext _ctx;
-        private readonly Validator _validator;
 
-        private readonly IPetTypeRepository _petTypeRepository;
-        private readonly IOwnerRepository _ownerRepository;
-
-        public PetRepository(PetApplicationContext ctx, IPetTypeRepository petTypeRepository, IOwnerRepository ownerRepository)
+        public PetRepository(PetApplicationContext ctx)
         {
             _ctx = ctx;
-            _petTypeRepository = petTypeRepository;
-            _ownerRepository = ownerRepository;
-
-            _validator = new Validator(ownerRepository, petTypeRepository);
         }
         public List<Pet> ReadAllPets()
         {
-            return ConversionOfPet().ToList();
+            try
+            {
+                return ConversionOfPet().ToList();
+            }
+            catch (DbUpdateException)
+            {
+                throw new SystemException("An internal error occured. Please contact the system provider.");
+            }
         }
 
         public Pet AddPet(Pet pet)
         {
             try
             {
-                if (!_validator.ValidatePet(pet))
-                    throw new InvalidDataException(_validator.GetErrors());
-
                 var newEntity = _ctx.Pets.Add(new PetEntity
                 {
                     ID = pet.ID,
@@ -54,7 +50,7 @@ namespace MQGroup.PetShop.Infrastructure.EFCore.Repositories
 
                 return GetPetById(newEntity.ID);
             }
-            catch (DbUpdateException e)
+            catch (DbUpdateException)
             {
                 throw new SystemException("An internal error occured. Please contact the system provider.");
             }
@@ -62,35 +58,53 @@ namespace MQGroup.PetShop.Infrastructure.EFCore.Repositories
 
         public bool DeletePetById(int id)
         {
-            _ctx.Pets.Remove(new PetEntity {ID = id});
-            _ctx.SaveChanges();
-            return true;
+            try
+            {
+                _ctx.Pets.Remove(new PetEntity {ID = id});
+                _ctx.SaveChanges();
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                throw new SystemException("An internal error occured. Please contact the system provider.");
+            }
         }
 
         public Pet GetPetById(int? id)
         {
-            Pet toReturn = ConversionOfPet().FirstOrDefault(pet => pet.ID == id);
-            if (toReturn == null)
-                throw new FileNotFoundException("Pet ID does not exist!");
-            return toReturn;
+            try
+            {
+                return ConversionOfPet().FirstOrDefault(pet => pet.ID == id);
+            }
+            catch (DbUpdateException)
+            {
+                throw new SystemException("An internal error occured. Please contact the system provider.");
+            }
         }
 
         public Pet UpdatePet(int id, Pet pet)
         {
-            var newEntity = new PetEntity
+            try
             {
-                ID = id,
-                Name = pet.Name,
-                Color = pet.Color,
-                Birthdate = pet.Birthdate,
-                SoldDate = pet.SoldDate,
-                Price = pet.Price,
-                TypeId = (int) pet.Type.ID
-            };
-            _ctx.Pets.Update(newEntity);
-            _ctx.SaveChanges();
-            pet.ID = id;
-            return pet;
+                var newEntity = new PetEntity
+                {
+                    ID = id,
+                    Name = pet.Name,
+                    Color = pet.Color,
+                    Birthdate = pet.Birthdate,
+                    SoldDate = pet.SoldDate,
+                    Price = pet.Price,
+                    TypeId = (int) pet.Type.ID
+                };
+                _ctx.Pets.Update(newEntity);
+                _ctx.SaveChanges();
+                pet.ID = id;
+                return pet;
+            }
+            catch (DbUpdateException)
+            {
+                throw new SystemException("An internal error occured. Please contact the system provider.");
+            }
         }
 
         public List<Pet> ReadPetsByType(PetType petType)
