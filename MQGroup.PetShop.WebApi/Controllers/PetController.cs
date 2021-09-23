@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using MQGroup.PetShop.Core.IServices;
 using MQGroup.PetShop.Core.Models;
@@ -18,7 +19,7 @@ namespace MQGroup.PetShop.WebApi.Controllers
         {
             _petService = petService;
         }
-
+        
         [HttpGet]
         public ActionResult<List<Pet>> getAllPets()
         {
